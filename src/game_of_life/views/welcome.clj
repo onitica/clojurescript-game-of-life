@@ -4,4 +4,6 @@
 
 (defpage "/" []
   (common/game-layout
-    [:h1 "Game of life will be hosted here!"]))
+    [:h1 "Game of life will be hosted here!"]
+	[:ul (for [x (range 1 11)]
+	       [:li x])]))

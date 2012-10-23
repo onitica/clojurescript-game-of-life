@@ -12696,6 +12696,37 @@ cljs.core.UUID.prototype.toString = function() {
 };
 cljs.core.UUID;
 var game_of_life = {game:{}};
+game_of_life.game.length = function(a) {
+  return a.length
+};
+game_of_life.game.item = function(a, b) {
+  return a.item(b)
+};
+game_of_life.game.as_seq = function(a) {
+  return function c(d) {
+    return new cljs.core.LazySeq(null, !1, function() {
+      for(;;) {
+        if(cljs.core.seq.call(null, d)) {
+          var e = cljs.core.first.call(null, d);
+          return cljs.core.cons.call(null, game_of_life.game.item.call(null, a, e), c.call(null, cljs.core.rest.call(null, d)))
+        }
+        return null
+      }
+    }, null)
+  }.call(null, cljs.core.range.call(null, game_of_life.game.length.call(null, a)))
+};
+game_of_life.game.by_id = function(a) {
+  return document.getElementById(cljs.core.name.call(null, a))
+};
+game_of_life.game.by_tag = function(a) {
+  return game_of_life.game.as_seq.call(null, document.getElementsByTagName(cljs.core.name.call(null, a)))
+};
+game_of_life.game.html = function(a) {
+  return a.innerHTML
+};
+game_of_life.game.set_html_BANG_ = function(a, b) {
+  return a.innerHTML = b
+};
 game_of_life.game.computeCharLoc = function(a) {
   var b = cljs.core.nth.call(null, a, 0, null), a = cljs.core.nth.call(null, a, 1, null);
   b = (b = cljs.core._EQ_.call(null, b, "#")) ? cljs.core._EQ_.call(null, a, 2) : b;
@@ -12738,10 +12769,46 @@ game_of_life.game.lifeStep = function(a) {
     }.call(null, cljs.core.range.call(null, b))
   }())
 };
-game_of_life.game.gameState = cljs.core.atom.call(null, cljs.core.PersistentVector.fromArray("      ; ##   ; ##   ;   ## ;   ## ;      ".split(";"), !0));
+game_of_life.game.size = 30;
+game_of_life.game.gameState = cljs.core.atom.call(null, cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
+  return function b(c) {
+    return new cljs.core.LazySeq(null, !1, function() {
+      for(;;) {
+        if(cljs.core.seq.call(null, c)) {
+          var d = cljs.core.first.call(null, c);
+          return cljs.core.cons.call(null, cljs.core.apply.call(null, cljs.core.str, function() {
+            return function(b) {
+              return function g(c) {
+                return new cljs.core.LazySeq(null, false, function() {
+                  return function() {
+                    for(;;) {
+                      if(cljs.core.seq.call(null, c)) {
+                        cljs.core.first.call(null, c);
+                        return cljs.core.cons.call(null, cljs.core._EQ_.call(null, 0, cljs.core.rand_int.call(null, 2)) ? "#" : " ", g.call(null, cljs.core.rest.call(null, c)))
+                      }
+                      return null
+                    }
+                  }
+                }(b), null)
+              }
+            }(d).call(null, cljs.core.range.call(null, game_of_life.game.size))
+          }()), b.call(null, cljs.core.rest.call(null, c)))
+        }
+        return null
+      }
+    }, null)
+  }.call(null, cljs.core.range.call(null, game_of_life.game.size))
+}()));
 setInterval(function() {
-  var a = alert, b;
   cljs.core.swap_BANG_.call(null, game_of_life.game.gameState, game_of_life.game.lifeStep);
-  b = cljs.core.deref.call(null, game_of_life.game.gameState);
-  return a(b)
+  for(var a = game_of_life.game.by_tag.call(null, "\ufdd0'li"), b = cljs.core.deref.call(null, game_of_life.game.gameState), c = cljs.core.seq.call(null, cljs.core.range.call(null, cljs.core.count.call(null, a)));;) {
+    if(c) {
+      var d = cljs.core.first.call(null, c), e = cljs.core.nth.call(null, a, d), d = cljs.core.nth.call(null, b, d);
+      game_of_life.game.set_html_BANG_.call(null, e, d);
+      c = cljs.core.next.call(null, c)
+    }else {
+      break
+    }
+  }
+  return console.log("" + cljs.core.str(cljs.core.range.call(null, cljs.core.count.call(null, a))))
 }, 500);
