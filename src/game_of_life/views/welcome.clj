@@ -5,5 +5,6 @@
 (defpage "/" []
   (common/game-layout
     [:h1 "Game of life will be hosted here!"]
-	[:ul (for [x (range 1 11)]
-	       [:li x])]))
+	[:canvas {:id "surface" :name "surface" :height 500 :width 500}]
+  )
+)
