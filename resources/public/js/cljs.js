@@ -12730,6 +12730,7 @@ game_of_life.game.set_html_BANG_ = function(a, b) {
 game_of_life.game.set_onclick_BANG_ = function(a, b) {
   return a.onclick = b
 };
+game_of_life.game.size = 50;
 game_of_life.game.compute_char_loc = function(a) {
   var b = cljs.core.nth.call(null, a, 0, null), a = cljs.core.nth.call(null, a, 1, null);
   b = (b = cljs.core._EQ_.call(null, b, "#")) ? cljs.core._EQ_.call(null, a, 2) : b;
@@ -12772,7 +12773,41 @@ game_of_life.game.life_step = function(a) {
     }.call(null, cljs.core.range.call(null, b))
   }())
 };
-game_of_life.game.size = 50;
+game_of_life.game.update_heatmap = function(a, b) {
+  var c = cljs.core.count.call(null, b);
+  return cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
+    return function e(f) {
+      return new cljs.core.LazySeq(null, !1, function() {
+        for(;;) {
+          if(cljs.core.seq.call(null, f)) {
+            var g = cljs.core.first.call(null, f);
+            return cljs.core.cons.call(null, cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
+              return function(c) {
+                return function j(e) {
+                  return new cljs.core.LazySeq(null, false, function(c) {
+                    return function() {
+                      for(;;) {
+                        if(cljs.core.seq.call(null, e)) {
+                          var f = cljs.core.first.call(null, e);
+                          return cljs.core.cons.call(null, function() {
+                            var e = cljs.core._EQ_.call(null, cljs.core.get_in.call(null, b, cljs.core.PersistentVector.fromArray([c, f], true)), "#"), g = cljs.core.get_in.call(null, a, cljs.core.PersistentVector.fromArray([c, f], true));
+                            return e === true ? g + 1 : 0
+                          }(), j.call(null, cljs.core.rest.call(null, e)))
+                        }
+                        return null
+                      }
+                    }
+                  }(c), null)
+                }
+              }(g).call(null, cljs.core.range.call(null, c))
+            }()), e.call(null, cljs.core.rest.call(null, f)))
+          }
+          return null
+        }
+      }, null)
+    }.call(null, cljs.core.range.call(null, c))
+  }())
+};
 game_of_life.game.game_state = cljs.core.atom.call(null, cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
   return function b(c) {
     return new cljs.core.LazySeq(null, !1, function() {
@@ -12802,6 +12837,38 @@ game_of_life.game.game_state = cljs.core.atom.call(null, cljs.core.into.call(nul
     }, null)
   }.call(null, cljs.core.range.call(null, game_of_life.game.size))
 }()));
+game_of_life.game.empty_heatmap = function() {
+  return cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
+    return function b(c) {
+      return new cljs.core.LazySeq(null, !1, function() {
+        for(;;) {
+          if(cljs.core.seq.call(null, c)) {
+            var d = cljs.core.first.call(null, c);
+            return cljs.core.cons.call(null, cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
+              return function(b) {
+                return function g(c) {
+                  return new cljs.core.LazySeq(null, false, function() {
+                    return function() {
+                      for(;;) {
+                        if(cljs.core.seq.call(null, c)) {
+                          cljs.core.first.call(null, c);
+                          return cljs.core.cons.call(null, 0, g.call(null, cljs.core.rest.call(null, c)))
+                        }
+                        return null
+                      }
+                    }
+                  }(b), null)
+                }
+              }(d).call(null, cljs.core.range.call(null, game_of_life.game.size))
+            }()), b.call(null, cljs.core.rest.call(null, c)))
+          }
+          return null
+        }
+      }, null)
+    }.call(null, cljs.core.range.call(null, game_of_life.game.size))
+  }())
+};
+game_of_life.game.game_heatmap = cljs.core.atom.call(null, game_of_life.game.empty_heatmap.call(null, cljs.core.PersistentVector.EMPTY));
 game_of_life.game.clear_board = function(a) {
   return cljs.core.into.call(null, cljs.core.PersistentVector.EMPTY, function() {
     return function c(a) {
@@ -12840,6 +12907,7 @@ game_of_life.game.set_board_piece = function(a, b, c) {
 game_of_life.game.sizepx = 10;
 game_of_life.game.iteration = cljs.core.atom.call(null, 0);
 game_of_life.game.paused = cljs.core.atom.call(null, !1);
+game_of_life.game.show_heatmap = cljs.core.atom.call(null, !1);
 game_of_life.game.canvas_surface = function() {
   var a = game_of_life.game.by_id.call(null, "surface");
   return cljs.core.PersistentVector.fromArray([a.getContext("2d"), a.width, a.height], !0)
@@ -12862,7 +12930,10 @@ game_of_life.game.draw_game = function() {
       for(var d = cljs.core.seq.call(null, cljs.core.range.call(null, cljs.core.count.call(null, c)));;) {
         if(d) {
           var e = cljs.core.first.call(null, d);
-          cljs.core._EQ_.call(null, cljs.core.nth.call(null, c, e), "#") && game_of_life.game.fill_rect.call(null, game_of_life.game.canvas_surface, cljs.core.PersistentVector.fromArray([b * game_of_life.game.sizepx, e * game_of_life.game.sizepx, game_of_life.game.sizepx, game_of_life.game.sizepx], !0), cljs.core.PersistentVector.fromArray([3, 255, 3], !0));
+          if(cljs.core._EQ_.call(null, cljs.core.nth.call(null, c, e), "#")) {
+            var f = cljs.core.get_in.call(null, cljs.core.deref.call(null, game_of_life.game.game_heatmap), cljs.core.PersistentVector.fromArray([b, e], !0)), f = 24 < f ? 255 : 10 * (f + 1), f = !0 === cljs.core.deref.call(null, game_of_life.game.show_heatmap) ? cljs.core.PersistentVector.fromArray([f, f, f], !0) : cljs.core.PersistentVector.fromArray([3, 255, 3], !0);
+            game_of_life.game.fill_rect.call(null, game_of_life.game.canvas_surface, cljs.core.PersistentVector.fromArray([b * game_of_life.game.sizepx, e * game_of_life.game.sizepx, game_of_life.game.sizepx, game_of_life.game.sizepx], !0), f)
+          }
           d = cljs.core.next.call(null, d)
         }else {
           break
@@ -12881,16 +12952,20 @@ game_of_life.game.update_itr = function() {
   return game_of_life.game.set_html_BANG_.call(null, a, [cljs.core.str("Iteration: "), cljs.core.str(cljs.core.deref.call(null, game_of_life.game.iteration))].join(""))
 };
 setInterval(function() {
-  return!1 === cljs.core.deref.call(null, game_of_life.game.paused) ? (cljs.core.swap_BANG_.call(null, game_of_life.game.game_state, game_of_life.game.life_step), game_of_life.game.draw_game.call(null), game_of_life.game.update_itr.call(null)) : null
+  return!1 === cljs.core.deref.call(null, game_of_life.game.paused) ? (cljs.core.swap_BANG_.call(null, game_of_life.game.game_state, game_of_life.game.life_step), cljs.core.swap_BANG_.call(null, game_of_life.game.game_heatmap, game_of_life.game.update_heatmap, cljs.core.deref.call(null, game_of_life.game.game_state)), game_of_life.game.draw_game.call(null), game_of_life.game.update_itr.call(null)) : null
 }, 333);
 game_of_life.game.set_onclick_BANG_.call(null, game_of_life.game.by_id.call(null, "pause-btn"), function() {
   return cljs.core.swap_BANG_.call(null, game_of_life.game.paused, cljs.core.not)
+});
+game_of_life.game.set_onclick_BANG_.call(null, game_of_life.game.by_id.call(null, "heatmap-btn"), function() {
+  return cljs.core.swap_BANG_.call(null, game_of_life.game.show_heatmap, cljs.core.not)
 });
 game_of_life.game.set_onclick_BANG_.call(null, game_of_life.game.by_id.call(null, "clear-btn"), function() {
   cljs.core.swap_BANG_.call(null, game_of_life.game.game_state, game_of_life.game.clear_board);
   cljs.core.swap_BANG_.call(null, game_of_life.game.iteration, function() {
     return-1
   });
+  cljs.core.swap_BANG_.call(null, game_of_life.game.game_heatmap, game_of_life.game.empty_heatmap);
   game_of_life.game.draw_game.call(null);
   return game_of_life.game.update_itr.call(null)
 });

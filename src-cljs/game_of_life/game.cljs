@@ -17,6 +17,8 @@
   (set! (. dom -onclick) func))
 
 ;Game functions
+(def size 50)
+
 (defn compute-char-loc [[t num]]
 	(cond (and (= t \#) (= num 2)) \#
 		  (= num 3) \#
@@ -46,15 +48,26 @@
 	)
 )
 
-(def size 50)
+(defn update-heatmap [heatmap board]
+   	(let [size (count board)]
+		(into [] (for [x (range size)] (into [] (for [y (range size)] 
+		   (let [alive (= (get-in board [x y]) \#) heat (get-in heatmap [x y])] 
+				(if (true? alive) (inc heat) 0)
+		   )
+		))))
+	)
+)
 
 (def game-state (atom (into [] (for [x (range size)] 
-					(apply str (for [y (range size)]
-						 	(if (= 0 (rand-int 2)) \# \space)
-						 )
-					)
-				)))
+					(apply str (for [y (range size)] (if (= 0 (rand-int 2)) \# \space))))))
 )
+
+(defn empty-heatmap [unused]
+	(into [] (for [x (range size)] 
+						(into [] (for [y (range size)] 0))))
+)
+
+(def game-heatmap (atom (empty-heatmap [])))
 
 (defn clear-board [board]
 	(into []
@@ -77,6 +90,7 @@
 (def sizepx 10)
 (def iteration (atom 0))
 (def paused (atom false))
+(def show-heatmap (atom false))
 
 ;canvas functions
 (def canvas-surface
@@ -102,7 +116,11 @@
 		(when-let [row (first game-items)]
 			(doseq [y (range (count row))]
 				(when (= (nth row y) \#)
-					(fill-rect canvas-surface [(* idx sizepx) (* y sizepx) sizepx sizepx] [3 255 3])
+					(let [heat (get-in @game-heatmap [idx y]) 
+					      color (if (> heat 24) 255 (* 10 (inc heat)))
+						  rgb (if (true? @show-heatmap) [color color color] [3 255 3])]
+					    (fill-rect canvas-surface [(* idx sizepx) (* y sizepx) sizepx sizepx] rgb)
+					)
 				)
 			)
 			(recur (rest game-items) (inc idx))
@@ -123,7 +141,8 @@
 
 ;main loop
 (js/setInterval #(when (false? @paused)
-    (swap! game-state life-step)  
+    (swap! game-state life-step)
+  	(swap! game-heatmap update-heatmap @game-state)
 	(draw-game)
 	(update-itr))
 333)
@@ -131,8 +150,11 @@
 ;onclick listeners
 (set-onclick! (by-id "pause-btn") #(swap! paused not))
 
+(set-onclick! (by-id "heatmap-btn") #(swap! show-heatmap not))
+
 (set-onclick! (by-id "clear-btn") #(do (swap! game-state clear-board)
 									   (swap! iteration (fn [itr] -1))
+									   (swap! game-heatmap empty-heatmap)
 									   (draw-game)
 									   (update-itr)))
 

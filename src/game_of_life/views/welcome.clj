@@ -9,6 +9,7 @@
 	[:form {:id "options-form" :name "options-form" :enctype="multipart/form-data"}
 	       [:input {:type "button" :id "pause-btn" :value "Pause/Resume"}]
 	 	   [:input {:type "button" :id "clear-btn" :value "Clear"}]
+		   [:input {:type "button" :id "heatmap-btn" :value "Toggle Heatmap"}]
 	]
 	[:div {:id "itr-div" :height 100 :width 100}]
   )
