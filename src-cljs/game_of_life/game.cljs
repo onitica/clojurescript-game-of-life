@@ -17,7 +17,7 @@
   (set! (. dom -onclick) func))
 
 ;Game functions
-(def size 50)
+(def size 40)
 
 (defn compute-char-loc [[t num]]
 	(cond (and (= t \#) (= num 2)) \#
@@ -104,7 +104,7 @@
   (.fillRect surface x y width height))
 
 (defn clear-surface [[context width height]]
-	(fill-rect [context width height] [0 0 width height] [255 2 255])
+	(fill-rect [context width height] [0 0 width height] [3 3 255])
 )
 
 ;Main draw function

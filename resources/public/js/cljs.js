@@ -12730,7 +12730,7 @@ game_of_life.game.set_html_BANG_ = function(a, b) {
 game_of_life.game.set_onclick_BANG_ = function(a, b) {
   return a.onclick = b
 };
-game_of_life.game.size = 50;
+game_of_life.game.size = 40;
 game_of_life.game.compute_char_loc = function(a) {
   var b = cljs.core.nth.call(null, a, 0, null), a = cljs.core.nth.call(null, a, 1, null);
   b = (b = cljs.core._EQ_.call(null, b, "#")) ? cljs.core._EQ_.call(null, a, 2) : b;
@@ -12919,7 +12919,7 @@ game_of_life.game.fill_rect = function(a, b, c) {
 };
 game_of_life.game.clear_surface = function(a) {
   var b = cljs.core.nth.call(null, a, 0, null), c = cljs.core.nth.call(null, a, 1, null), a = cljs.core.nth.call(null, a, 2, null);
-  return game_of_life.game.fill_rect.call(null, cljs.core.PersistentVector.fromArray([b, c, a], !0), cljs.core.PersistentVector.fromArray([0, 0, c, a], !0), cljs.core.PersistentVector.fromArray([255, 2, 255], !0))
+  return game_of_life.game.fill_rect.call(null, cljs.core.PersistentVector.fromArray([b, c, a], !0), cljs.core.PersistentVector.fromArray([0, 0, c, a], !0), cljs.core.PersistentVector.fromArray([3, 3, 255], !0))
 };
 game_of_life.game.draw_game = function() {
   var a = cljs.core.deref.call(null, game_of_life.game.game_state);

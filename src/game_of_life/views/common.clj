@@ -5,8 +5,10 @@
 (defpartial game-layout [& content]
   (html5
     [:head
-      [:title "Interactive Game of Life"]]
+      [:title "Interactive Game of Life"]
+      (include-css "/css/reset.css")
+	  (include-css "/css/gof.css")]
     [:body
       [:div#wrapper
         content]]
-		(include-js "/js/cljs.js")))
+      (include-js "/js/cljs.js")))
