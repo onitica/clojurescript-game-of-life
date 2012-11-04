@@ -1,6 +1,6 @@
 # game_of_life
 
-A website written in noir. 
+An implementation of Conway's Game of Life using Noir and Clojurescript. 
 
 ## Usage
 
@@ -13,7 +13,7 @@ lein run
 
 ## License
 
-Copyright (C) 2011 FIXME
+Copyright (C) 2011 Octavian Nitica
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
